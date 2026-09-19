@@ -4,7 +4,7 @@ no_screen_padding: 'no'
 dark_mode: 'no'
 static_data: ''
 polling_verb: get
-framework_version: latest
+framework_version: 3.3.2
 serverless_language: node
 polling_url: "{% liquid assign feed_urls = rss_url | split: \",\" %}\r\n{% for url in feed_urls %} {% assign trimmed_url = url | strip %}{% unless trimmed_url == blank %}\r\n{{ trimmed_url }}\r\n{% endunless %} {% endfor %}\r\n{% liquid\r\nassign latlon = lat_lon | split: \",\"\r\nassign lat = latlon[0]\r\nassign lon = latlon[1]\r\n%}\r\nhttps://api.open-meteo.com/v1/forecast?latitude={{ lat }}&longitude={{ lon }}&current=temperature_2m,weathercode&daily=temperature_2m_max,temperature_2m_min,weathercode&temperature_unit={{ unit }}&timezone=auto&forecast_days=1"
 polling_headers: ''
