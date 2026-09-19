@@ -57,7 +57,7 @@ custom_fields:
   field_type: select
   name: Date format
   options:
-  - DD-MM-YYY (31-12-2026): eu
+  - DD-MM-YYYY (31-12-2026): eu
   - MM/DD/YYYY (12/31/2026): us
   default: eu
   optional: true
@@ -72,8 +72,8 @@ custom_fields:
 - keyname: language
   field_type: select
   name: Language
-  description: Select the language of the recipe.
-  help_text: Need a language? Give me a shot!
+  description: Select the language for dates and labels.
+  help_text: Need another language? Give me a shout!
   options:
   - English: en
   - Nederlands: nl
