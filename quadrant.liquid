@@ -1,0 +1,66 @@
+<div class="layout layout--col">
+
+  {% comment %} === Top bar: edition date + feed name === {% endcomment %}
+  <div class="flex border--h-50 w--full flex--center pb--2 text--gray-20">
+    <div class="text--small stretch">
+      <span class="text--bold">{{ t_edition }}</span> &mdash; {{ trmnl.system.timestamp_utc | date: date_pattern }}
+    </div>
+    <div class="text--small">
+      <span class="text--bold">{{ t_source }}</span> &mdash; {{ feed_title | default: trmnl.plugin_settings.instance_name | truncate: 25 }}
+    </div>
+  </div>
+
+  {% comment %} Article 1: title + date only (too small a view for description/image) {% endcomment %}
+  <div class="flex stretch">
+    <article class="flex stretch flex--col flex--left flex--start gap--none lg:gap--small">
+      <h1 class="text--large lg:text--xlarge w--full stretch" data-clamp="2" data-clamp-lg-portrait="4">{{ firstArticle.title }}</h1>
+      <date class="text--gray-30 text--small border--h-50 w--full pb--3">{% unless firstArticle_is_today %}{{ firstArticle.date | date: date_pattern }} &middot; {% endunless %}{{ firstArticle.date | date: time_pattern | downcase }}{% if multi_source and firstArticle.source != blank %} &middot; {{ firstArticle.source }}{% endif %}</date>
+    </article>
+  </div>
+
+  <div class="grid border--h-50 lg:pb--3">
+    {% comment %} Weather sidebar - shows t_weather_unavailable instead of guessing when Open-Meteo (IDX_1) didn't return data {% endcomment %}
+    <div class="col--span-2 lg:col--span-2 bg--gray-75 lg:bg--gray-70 text-stroke rounded rounded--xsmall p--2 lg:p--4 flex flex--col">
+      {% if weather_ok %}
+      <div class="w--full flex flex--center flex--center-x flex--col lg:flex--row lg:portrait:flex--col lg:portrait:stretch">
+        <img src="https://trmnl.achtnegen.nl/weather/icons/{{ weatherCategory }}.svg" class="w--7 lg:w--6">
+        <h1 class="text--large lg:text--large lg:portrait:text--xlarge">{{ curTemp }}°</h1>
+      </div>
+      <span class="hidden lg:block text--small text--black">{{ t_low_short }} {{dailyLow}}° <br> {{ t_high_short }} {{dailyHigh}}°</span>
+      {% else %}
+      <div class="stretch flex flex--col flex--center flex--center-x text--center">
+        <span class="text--small">{{ t_weather_unavailable }}</span>
+      </div>
+      {% endif %}
+    </div>
+    {% comment %} Article 3: italic title, no image/description {% endcomment %}
+    <div class="col--span-2 border--v-50 pl--3 lg:col--span-2 flex flex--col">
+
+      <article class="flex flex--col flex--left flex--start gap--small stretch">
+        <span class="bg--black w--full h--1 lg:mb--1 lg:portrait:hidden"></span>
+        <h1 class="text--base lg:stretch" data-clamp="3" data-clamp-lg-portrait="4"><i>{{ thirdArticle.title }}</i></h1>
+        <date class="text--gray-30 text--small">{% unless thirdArticle_is_today %}{{ thirdArticle.date | date: date_pattern }} &middot; {% endunless %}{{ thirdArticle.date | date: time_pattern | downcase }}{% if multi_source and thirdArticle.source != blank %} &middot; {{ thirdArticle.source }}{% endif %}</date>
+      </article>
+
+    </div>
+  </div>
+  {% comment %} === Articles 2 & 4: landscape only, title + date === {% endcomment %}
+  <div class="hidden lg:grid">
+    <div class="col--span-2 lg:portrait:flex--col gap">
+
+      <article class="flex flex--col flex--left flex--start gap--small stretch">
+        <h2 class="stretch text--base" data-clamp="2" data-clamp-lg-portrait="4">{{ secondArticle.title }}</h2>
+        <date class="text--gray-30 text--small">{% unless secondArticle_is_today %}{{ secondArticle.date | date: date_pattern }} &middot; {% endunless %}{{ secondArticle.date | date: time_pattern | downcase }}{% if multi_source and secondArticle.source != blank %} &middot; {{ secondArticle.source }}{% endif %}</date>
+      </article>
+
+    </div>
+    <div class="col--span-2 border--v-50 pl--3 flex flex--col">
+      <article class="flex flex--col flex--left flex--start gap--small stretch">
+        <h2 class="stretch text--base" data-clamp="2" data-clamp-lg-portrait="4">{{ fourthArticle.title }}</h2>
+        <date class="text--gray-30 text--small">{% unless fourthArticle_is_today %}{{ fourthArticle.date | date: date_pattern }} &middot; {% endunless %}{{ fourthArticle.date | date: time_pattern | downcase }}{% if multi_source and fourthArticle.source != blank %} &middot; {{ fourthArticle.source }}{% endif %}</date>
+      </article>
+
+    </div>
+  </div>
+
+</div>

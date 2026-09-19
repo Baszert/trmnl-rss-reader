@@ -1,0 +1,135 @@
+<div class="layout layout--col">
+
+  {% comment %} === Top bar: edition date + feed name === {% endcomment %}
+  <div class="flex border--h-50 w--full flex flex--center pb--3 pt--1 text--gray-20">
+    <div class="text--small stretch">
+      <span class="text--bold">{{ t_edition }}</span> &mdash; {{ trmnl.system.timestamp_utc | date: date_pattern }}
+    </div>
+    <div class="text--small">
+      <span class="text--bold">{{ t_source }}</span> &mdash; {{ feed_title | default: trmnl.plugin_settings.instance_name | truncate: 50 }}
+    </div>
+  </div>
+
+  {% comment %} === Article 1 (hero): wide banner image, portrait-only === {% endcomment %}
+  <div class="hidden lg:portrait:block w--full">
+    {% if firstArticle.image != blank %}
+    <img class="w--full h--full aspect--21/9 image-dither image image--cover rounded--xsmall" src="{{ firstArticle.image }}">
+    {% else %}
+    <img class="w--full h--full aspect--21/9 image-dither image image--cover rounded--xsmall" src="{{ no_image }}">
+    {% endif %}
+  </div>
+
+  <div class="grid gap mb--2 lg:portrait:mb--0 stretch">
+    {% comment %} Article 1: title + description + date {% endcomment %}
+    <div class="col--span-2 lg:col--span-4 lg:portrait:col--span-5">
+      <article class="flex flex--col gap--none lg:gap flex--left flex--start">
+        <h1 class="stretch text--xlarge lg:text--xxlarge lg:portrait:text--xxlarge w--full" data-clamp="4" data-clamp-lg="6" data-clamp-lg-portrait="4">{{ firstArticle.title }}</h1>
+        <date class="text--gray-30 text--small border--h-50 w--full pb--3">{% unless firstArticle_is_today %}{{ firstArticle.date | date: date_pattern }} &middot; {% endunless %}{{ firstArticle.date | date: time_pattern | downcase }}{% if multi_source and firstArticle.source != blank %} &middot; {{ firstArticle.source }}{% endif %}</date>
+      </article>
+    </div>
+
+    {% comment %} Article 1: square image, landscape only (portrait uses the wide banner above instead) {% endcomment %}
+    <div class="col--span-2 lg:col--span-5 flex flex--col lg:portrait:hidden">
+      {% if firstArticle.image != blank %}
+      <img class="w--full h--full aspect--1/1 image-dither image image--cover rounded--xsmall" src="{{ firstArticle.image }}">
+      {% else %}
+      <img class="w--full h--full aspect--1/1 image-dither image image--cover rounded--xsmall" src="{{ no_image }}">
+      {% endif %}
+    </div>
+
+    {% comment %} Weather sidebar - shows t_weather_unavailable instead of guessing when Open-Meteo (IDX_1) didn't return data {% endcomment %}
+    <div class="col--span-1 lg:col--span-2 bg--gray-75 lg:bg--gray-70 text-stroke rounded rounded--xsmall p--2 lg:p--4 flex flex--col">
+      {% if weather_ok %}
+      <div class="stretch flex flex--col gap--none flex--center">
+        <div class="w--full flex flex--center flex--center-x">
+          <img src="https://trmnl.achtnegen.nl/weather/icons/{{ weatherCategory }}.svg" class="w--20 mb--5 lg:portrait:w--24 lg:portrait:mb--2">
+        </div>
+        <h1 class="text--large lg:text--xxlarge lg:portrait:text--xlarge">{{ curTemp }}°</h1>
+      </div>
+      <span class="hidden lg:block text--black text--small text--center">{{ t_low_prefix }} <strong class="text--strong">{{dailyLow}}°</strong> {{ t_high_prefix }} <strong class="text--strong">{{dailyHigh}}°</strong></span>
+      <span class="lg:hidden text--small">{{ t_low_short }} {{dailyLow}}° <br> {{ t_high_short }} {{dailyHigh}}°</span>
+      {% else %}
+      <div class="stretch flex flex--col flex--center flex--center-x text--center">
+        <span class="text--small">{{ t_weather_unavailable }}</span>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="grid">
+    {% comment %} Article 3: thumbnail + italic title, no description {% endcomment %}
+    <div class="col--span-3 flex flex--col">
+
+      {% if thirdArticle.image != blank %}
+      <img class="w--full h--32 hidden lg:portrait:block image-dither image image--cover rounded--xsmall" src="{{ thirdArticle.image }}">
+      {% else %}
+      <img class="w--full h--32 hidden lg:portrait:block image-dither image image--cover rounded--xsmall" src="{{ no_image }}">
+      {% endif %}
+
+      <article class="flex flex--col flex--left flex--start gap--small stretch">
+        <span class="bg--black w--full h--1 lg:mb--1 lg:portrait:hidden"></span>
+        <h1 class="text--base lg:text--xlarge lg:portrait:text--large stretch" data-clamp="4">{{ thirdArticle.title }}</h1>
+        <date class="text--gray-30 text--small">{% unless thirdArticle_is_today %}{{ thirdArticle.date | date: date_pattern }} &middot; {% endunless %}{{ thirdArticle.date | date: time_pattern | downcase }}{% if multi_source and thirdArticle.source != blank %} &middot; {{ thirdArticle.source }}{% endif %}</date>
+      </article>
+
+    </div>
+    {% comment %} Article 2: 3 responsive image crops + title, no description {% endcomment %}
+    <div class="col--span-4 flex border--v-50 pl--3 lg:portrait:flex--col">
+
+      {% if secondArticle.image != blank %}
+      <img class="aspect--1/1 h--24 lg:hidden image-dither image image--cover rounded--xsmall" src="{{ secondArticle.image }}">
+      <img class="aspect--1/1 h--44 hidden lg:portrait:hidden lg:block image-dither image image--cover rounded--xsmall" src="{{ secondArticle.image }}">
+      <img class="w--full h--32 hidden lg:portrait:block image-dither image image--cover rounded--xsmall" src="{{ secondArticle.image }}">
+      {% else %}
+      <img class="aspect--1/1 h--24 lg:hidden image-dither image image--cover rounded--xsmall" src="{{ no_image }}">
+      <img class="aspect--1/1 h--44 hidden lg:portrait:hidden lg:block image-dither image image--cover rounded--xsmall" src="{{ no_image }}">
+      <img class="w--full h--32 hidden lg:portrait:block image-dither image image--cover rounded--xsmall" src="{{ no_image }}">
+      {% endif %}
+
+      <article class="flex flex--col flex--left flex--start gap--small stretch">
+        <h2 class="stretch text--base lg:text--large lg:portrait:text--large" data-clamp="5">{{ secondArticle.title }}</h2>
+        <date class="text--gray-30 text--small">{% unless secondArticle_is_today %}{{ secondArticle.date | date: date_pattern }} &middot; {% endunless %}{{ secondArticle.date | date: time_pattern | downcase }}{% if multi_source and secondArticle.source != blank %} &middot; {{ secondArticle.source }}{% endif %}</date>
+      </article>
+
+    </div>
+    {% comment %} Article 4: thumbnail + title, no description {% endcomment %}
+    <div class="col--span-3 border--v-50 pl--3 flex flex--col">
+
+      {% if fourthArticle.image != blank %}
+      <img class="w--full h--32 hidden lg:portrait:block image-dither image image--cover rounded--xsmall" src="{{ fourthArticle.image }}">
+      {% else %}
+      <img class="w--full h--32 hidden lg:portrait:block image-dither image image--cover rounded--xsmall" src="{{ no_image }}">
+      {% endif %}
+
+      <article class="flex flex--col flex--left flex--start gap--small stretch">
+        <h2 class="stretch text--base lg:text--large lg:portrait:text--large" data-clamp="5">{{ fourthArticle.title }}</h2>
+        <date class="text--gray-30 text--small">{% unless fourthArticle_is_today %}{{ fourthArticle.date | date: date_pattern }} &middot; {% endunless %}{{ fourthArticle.date | date: time_pattern | downcase }}{% if multi_source and fourthArticle.source != blank %} &middot; {{ fourthArticle.source }}{% endif %}</date>
+      </article>
+
+    </div>
+  </div>
+
+  <div class="border--h-50 w--full mt--2"></div>
+
+  {% comment %} === Articles 5 & 6: headline-only footer row, no images === {% endcomment %}
+  <div class="grid">
+    {% comment %} Article 5 {% endcomment %}
+    <div class="col--span-4 flex gap lg:gap--large">
+
+      <article class="flex flex--col flex--left flex--start gap--small stretch">
+        <h2 class="stretch text--base lg:text--large lg:portrait:text--base pt--2 lg:pt--3" data-clamp="2">{{ fifthArticle.title }}</h2>
+        <date class="text--gray-30 text--small">{% unless fifthArticle_is_today %}{{ fifthArticle.date | date: date_pattern }} &middot; {% endunless %}{{ fifthArticle.date | date: time_pattern | downcase }}{% if multi_source and fifthArticle.source != blank %} &middot; {{ fifthArticle.source }}{% endif %}</date>
+      </article>
+
+    </div>
+    {% comment %} Article 6: highlighted in a dark card {% endcomment %}
+    <div class="col--span-3 p--2 lg:p--3 flex flex--col bg--gray-20 text--white rounded--xsmall">
+      <article class="flex flex--col flex--left flex--start gap--small h--full w--full">
+        <h2 class="stretch text--base lg:text--large lg:portrait:text--base" data-clamp="2" data-clamp-lg-portrait="2">{{ sixthArticle.title }}</h2>
+        <date class="text--gray-75 text--small">{% unless sixthArticle_is_today %}{{ sixthArticle.date | date: date_pattern }} &middot; {% endunless %}{{ sixthArticle.date | date: time_pattern | downcase }}{% if multi_source and sixthArticle.source != blank %} &middot; {{ sixthArticle.source }}{% endif %}</date>
+      </article>
+
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,103 @@
+---
+strategy: polling
+no_screen_padding: 'no'
+dark_mode: 'no'
+static_data: ''
+polling_verb: get
+framework_version: latest
+serverless_language: node
+polling_url: "{% liquid assign feed_urls = rss_url | split: \",\" %}\r\n{% for url in feed_urls %} {% assign trimmed_url = url | strip %}{% unless trimmed_url == blank %}\r\n{{ trimmed_url }}\r\n{% endunless %} {% endfor %}\r\n{% liquid\r\nassign latlon = lat_lon | split: \",\"\r\nassign lat = latlon[0]\r\nassign lon = latlon[1]\r\n%}\r\nhttps://api.open-meteo.com/v1/forecast?latitude={{ lat }}&longitude={{ lon }}&current=temperature_2m,weathercode&daily=temperature_2m_max,temperature_2m_min,weathercode&temperature_unit={{ unit }}&timezone=auto&forecast_days=1"
+polling_headers: ''
+polling_body: ''
+id: 410831
+oauth_enabled: 'false'
+oauth_pkce_enabled: 'no'
+oauth_authorize_url: ''
+oauth_token_url: ''
+oauth_scopes: ''
+oauth_scope_separator: ''
+oauth_refresh_url: ''
+oauth_auth_params: ''
+oauth_token_headers: ''
+oauth_token_site: ''
+oauth_token_params: ''
+oauth_token_request_auth_method: ''
+oauth_body_format: ''
+oauth_token_response_metadata: ''
+oauth_authorization_method: ''
+oauth_refresh_params: ''
+oauth_token_field_name: ''
+oauth_expiry_field_name: ''
+oauth_expiry_strategy: ''
+oauth_fixed_expiry_ms: ''
+custom_fields:
+- name: About this plugin
+  keyname: author_bio
+  field_type: author_bio
+  description: Turn any RSS or Atom feed into your own personal newspaper. The latest story takes the highlight, the rest follow below. Add your location for a little weather corner, just like the real thing. <br><br> Questions or ideas? Email me or reach out on Discord at @Bas/@Bastronautica.
+  category: news
+  email_address: trmnl@achtnegen.nl
+- keyname: rss_url
+  field_type: multi_string
+  name: RSS or Atom feed URL(s)
+  description: Enter one feed link, or several to merge them into a single combined feed sorted by publish date.
+  placeholder: https://example.com/feed.xml
+- keyname: lat_lon
+  field_type: lat_lon
+  name: Your location
+- keyname: unit
+  field_type: select
+  name: Temperature unit
+  options:
+  - Celsius (°C): celsius
+  - Fahrenheit (°F): fahrenheit
+  default: celsius
+  optional: true
+- keyname: date_format
+  field_type: select
+  name: Date format
+  options:
+  - DD-MM-YYY (31-12-2026): eu
+  - MM/DD/YYYY (12/31/2026): us
+  default: eu
+  optional: true
+- keyname: time_format
+  field_type: select
+  name: Time format
+  options:
+  - 24h: 24h
+  - 12hr (AM/PM): 12h
+  default: 24h
+  optional: true
+- keyname: language
+  field_type: select
+  name: Language
+  description: Select the language of the recipe.
+  help_text: Need a language? Give me a shot!
+  options:
+  - English: en
+  - Nederlands: nl
+  - Deutsch: de
+  - Français: fr
+  - Español: es
+  - Italiano: it
+  - Norsk: 'no'
+  - Svenska: sv
+  - Dansk: da
+  - Português: pt
+  - Polski: pl
+  - Suomi: fi
+  default: en
+  optional: true
+- keyname: heading_font
+  field_type: select
+  name: Heading font
+  description: Use the newsletter font, or TRMNL's default font.
+  options:
+  - Newsletter: newsletter
+  - Default: default
+  default: newsletter
+  optional: true
+name: 'RSS Reader '
+description: All the news that fits your screen.
+refresh_interval: 15

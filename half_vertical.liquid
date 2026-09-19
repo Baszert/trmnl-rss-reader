@@ -1,0 +1,103 @@
+<div class="layout layout--col">
+
+  {% comment %} === Top bar: edition date + feed name === {% endcomment %}
+  <div class="flex border--h-50 w--full flex--center pb--2 text--gray-20">
+    <div class="text--small stretch">
+      <span class="text--bold">{{ t_edition }}</span> &mdash; {{ trmnl.system.timestamp_utc | date: date_pattern }}
+    </div>
+    <div class="text--small">
+      <span class="text--bold">{{ t_source }}</span> &mdash; {{ feed_title | default: trmnl.plugin_settings.instance_name | truncate: 25 }}
+    </div>
+  </div>
+
+  {% comment %} Article 1: wide image, landscape only === {% endcomment %}
+  <div class="h--full hidden lg:flex">
+    {% if firstArticle.image != blank %}
+    <img class="w--full aspect--16/9 lg:portrait:aspect--4/3 image-dither image image--cover rounded--xsmall" src="{{ firstArticle.image }}">
+    {% else %}
+    <img class="w--full aspect--16/9 lg:portrait:aspect--4/3 image-dither image image--cover rounded--xsmall" src="{{ no_image }}">
+    {% endif %}
+  </div>
+  <div class="flex">
+    {% comment %} Article 1: title + description + date {% endcomment %}
+    <article class="flex stretch flex--col flex--left flex--start gap--none lg:gap--small">
+      <h1 class="stretch text--base lg:text--xlarge w--full" data-clamp="5" data-clamp-lg="3" data-clamp-lg-portrait="4">{{ firstArticle.title }}</h1>
+      <date class="text--gray-30 text--small border--h-50 w--full pb--3">{% unless firstArticle_is_today %}{{ firstArticle.date | date: date_pattern }} &middot; {% endunless %}{{ firstArticle.date | date: time_pattern | downcase }}{% if multi_source and firstArticle.source != blank %} &middot; {{ firstArticle.source }}{% endif %}</date>
+    </article>
+
+    {% comment %} Article 1: square image, portrait only {% endcomment %}
+    <div class="flex lg:hidden">
+      {% if firstArticle.image != blank %}
+      <img class="w--44 aspect--1/1 image-dither image image--cover rounded--xsmall" src="{{ firstArticle.image }}">
+      {% else %}
+      <img class="w--44 aspect--1/1 image-dither image image--cover rounded--xsmall" src="{{ no_image }}">
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="grid border--h-50 pb--3">
+    {% comment %} Weather sidebar - shows t_weather_unavailable instead of guessing when Open-Meteo (IDX_1) didn't return data {% endcomment %}
+    <div class="col--span-2 lg:col--span-2 bg--gray-75 lg:bg--gray-70 text-stroke rounded rounded--xsmall p--2 lg:p--4 flex flex--col flex--center">
+      {% if weather_ok %}
+      <div class="w--full flex flex--center flex--center-x flex--col lg:flex--row lg:portrait:flex--col lg:portrait:stretch">
+        <img src="https://trmnl.achtnegen.nl/weather/icons/{{ weatherCategory }}.svg" class="w--8 lg:w--8 lg:portrait:w--16">
+        <h1 class="text--large lg:text--xlarge lg:portrait:text--xxlarge">{{ curTemp }}°</h1>
+      </div>
+      <span class="hidden lg:block text--small text--black">{{ t_low_short }} {{dailyLow}}° <br> {{ t_high_short }} {{dailyHigh}}°</span>
+      {% else %}
+      <div class="stretch flex flex--col flex--center flex--center-x text--center">
+        <span class="text--small">{{ t_weather_unavailable }}</span>
+      </div>
+      {% endif %}
+    </div>
+    {% comment %} Article 3: thumbnail + italic title, no description {% endcomment %}
+    <div class="col--span-2 border--v-50 pl--3 lg:col--span-2 flex flex--col">
+
+      {% if thirdArticle.image != blank %}
+      <img class="w--full h--32 hidden lg:portrait:block image-dither image image--cover rounded--xsmall" src="{{ thirdArticle.image }}">
+      {% else %}
+      <img class="w--full h--32 hidden lg:portrait:block image-dither image image--cover rounded--xsmall" src="{{ no_image }}">
+      {% endif %}
+
+      <article class="flex flex--col flex--left flex--start gap--small stretch">
+        <span class="bg--black w--full h--1 lg:mb--1 lg:portrait:hidden"></span>
+        <h1 class="text--base lg:stretch" data-clamp="4"><i>{{ thirdArticle.title }}</i></h1>
+        <date class="text--gray-30 text--small">{% unless thirdArticle_is_today %}{{ thirdArticle.date | date: date_pattern }} &middot; {% endunless %}{{ thirdArticle.date | date: time_pattern | downcase }}{% if multi_source and thirdArticle.source != blank %} &middot; {{ thirdArticle.source }}{% endif %}</date>
+      </article>
+
+    </div>
+  </div>
+  <div class="grid">
+    {% comment %} Article 2: 2 responsive image crops + title, no description {% endcomment %}
+    <div class="col--span-2 lg:portrait:flex--col gap">
+
+      {% if secondArticle.image != blank %}
+      <img class="aspect--1/1 h--24 hidden lg:portrait:hidden lg:block image-dither image image--cover rounded--xsmall" src="{{ secondArticle.image }}">
+      <img class="w--full h--32 hidden lg:portrait:block image-dither image image--cover rounded--xsmall" src="{{ secondArticle.image }}">
+      {% else %}
+      <img class="aspect--1/1 h--24 hidden lg:portrait:hidden lg:block image-dither image image--cover rounded--xsmall" src="{{ no_image }}">
+      <img class="w--full h--32 hidden lg:portrait:block image-dither image image--cover rounded--xsmall" src="{{ no_image }}">
+      {% endif %}
+
+      <article class="flex flex--col flex--left flex--start gap--small stretch">
+        <h2 class="stretch text--base" data-clamp="4">{{ secondArticle.title }}</h2>
+        <date class="text--gray-30 text--small">{% unless secondArticle_is_today %}{{ secondArticle.date | date: date_pattern }} &middot; {% endunless %}{{ secondArticle.date | date: time_pattern | downcase }}{% if multi_source and secondArticle.source != blank %} &middot; {{ secondArticle.source }}{% endif %}</date>
+      </article>
+
+    </div>
+    {% comment %} Article 4: thumbnail + title, no description {% endcomment %}
+    <div class="col--span-2 border--v-50 pl--3 flex flex--col">
+      {% if fourthArticle.image != blank %}
+      <img class="w--full h--32 hidden lg:portrait:block image-dither image image--cover rounded--xsmall" src="{{ fourthArticle.image }}">
+      {% else %}
+      <img class="w--full h--32 hidden lg:portrait:block image-dither image image--cover rounded--xsmall" src="{{ no_image }}">
+      {% endif %}
+      <article class="flex flex--col flex--left flex--start gap--small stretch">
+        <h2 class="stretch text--base" data-clamp="4">{{ fourthArticle.title }}</h2>
+        <date class="text--gray-30 text--small">{% unless fourthArticle_is_today %}{{ fourthArticle.date | date: date_pattern }} &middot; {% endunless %}{{ fourthArticle.date | date: time_pattern | downcase }}{% if multi_source and fourthArticle.source != blank %} &middot; {{ fourthArticle.source }}{% endif %}</date>
+      </article>
+
+    </div>
+  </div>
+
+</div>
